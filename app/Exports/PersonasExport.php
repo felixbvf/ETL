@@ -6,13 +6,16 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 
 class PersonasExport implements WithMultipleSheets
-{
+{  
     use Exportable;
     public function sheets(): array
-    {
+    {   ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', '-1');
+        ini_set('max_input_time', '-1');
+        set_time_limit('-1');
         $sheets = [];
         $sheets[] = new GbageSheet();
-      //  $sheets[] = new GbdacSheet(); 
+        $sheets[] = new GbdacSheet(); 
         $sheets[] = new GbdocSheet(); 
         return $sheets;
     }
