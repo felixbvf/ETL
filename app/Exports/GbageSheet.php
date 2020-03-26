@@ -18,7 +18,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $personas->nombrecompleto,
             $personas->par_tipodoc,
             $personas->nrodoc,
-            '||',
+            '',
             $personas->par_tipoper,
             $personas->fecha_nac,
             $personas->par_sexo,
@@ -28,16 +28,16 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $personas->calleavdom1,
             $personas->calleavdom2,
             $personas->calleavdom3,
-            '||',
+            '',
             $personas->teldom,
             $personas->celular,
-            '||',
-            '||',
-            '||',
+            '',
+            '',
+            '',
             '75220',
-            '||',
-            '||',
-            '||', //Calificacion cliente
+            '',
+            '',
+            '', //Calificacion cliente
             $personas->fecha_inscripcion, //Fecha registro
             '20',
             '20',
@@ -46,13 +46,13 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $personas->fecha_reg,
             '1',
             '1', //Estado del cliente
-            '||',
-            '||',
-            '||',
-            '||',
-            '||', //usuario que modifico
-            '||',
-            '||',
+            '',
+            '',
+            '',
+            '',
+            '', //usuario que modifico
+            '',
+            '',
             '0',
             $personas->extci
         

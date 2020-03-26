@@ -17,14 +17,14 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $gbdoc->id_persona,
             $gbdoc->nrodoc,
             $gbdoc->fecha_exp,
-            '||',
+            '',
             $gbdoc->fecha_reg,
             '20',
             '20',
             $gbdoc->usuario_reg,
             $gbdoc->hora_reg,
-            '||',
-            '||'
+            '',
+            ''
         ] ;
     }
 
