@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMapping,WithTitle
-{
+{   
     public function map($personas) : array { //COLUMNAS A EXPORTAR
         return [
             $personas->id_persona,

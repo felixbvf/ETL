@@ -15,7 +15,7 @@ class GbdacSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     
     public function collection()
     {
-        $gbdac = Gbpersona::Select(DB::raw("id_persona, concat_ws(' ',nombre1, nombre2) as nombres ,appaterno,apmaterno,apesposo,email"))->orderByRaw('id_persona::numeric asc')->get();
+        $gbdac = Gbpersona::Select(DB::raw("id_persona, concat_ws(' ',nombre1, nombre2) as nombres,nombre1,nombre2,appaterno,apmaterno,apesposo,email"))->orderByRaw('id_persona::numeric asc')->get();
         return $gbdac;
     }
     public function map($gbdac) : array { //Datos a exportar
