@@ -179,6 +179,6 @@ class GbdacSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 
     public function title(): string
     {
-        return 'Gbdac';
+        return 'gbdac';
     }
 }

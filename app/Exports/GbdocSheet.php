@@ -46,13 +46,13 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     }
     public function collection()
     {
-        $gbdoc = Gbpersona::Select(DB::raw("id_persona, nrodoc,fecha_exp,fecha_reg::timestamp::date,usuario_reg,fecha_reg::timestamp::time as hora_reg"))->orderByRaw('id_persona::numeric asc')->get();
+        $gbdoc = Gbpersona::Select(DB::raw("id_persona, nrodoc,to_char(fecha_exp,'DD/MM/YYYY') as fecha_exp,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_reg,fecha_reg::timestamp::time as hora_reg"))->orderByRaw('id_persona::numeric asc')->get();
         return $gbdoc;
     }
 
     public function title(): string
     {
-        return 'Gbdoc';
+        return 'gbdoc';
     }
 
 }

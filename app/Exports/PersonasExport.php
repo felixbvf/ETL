@@ -14,9 +14,10 @@ class PersonasExport implements WithMultipleSheets
         ini_set('max_input_time', '-1');
         set_time_limit('-1');
         $sheets = [];
-        $sheets[] = new GbageSheet();
-        $sheets[] = new GbdacSheet(); 
+        $sheets[] = new GbageSheet();  //Agenda
+        $sheets[] = new GbdacSheet();  //Datos adicionales
         $sheets[] = new GbdocSheet(); 
+        $sheets[] = new GblabSheet();
         return $sheets;
     }
    

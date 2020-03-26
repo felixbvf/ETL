@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use App\Gbpersona;
 use DB;
-//use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -39,7 +38,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             '||',
             '||',
             '||', //Calificacion cliente
-            $personas->fecha_inscripcion,
+            $personas->fecha_inscripcion, //Fecha registro
             '20',
             '20',
             $personas->usuario_reg,
@@ -88,7 +87,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             'GBAGEACT1',
             'GBAGEACT2',
             'GBAGECALF',//Calificacion cliente
-            'GBAGEFREG',
+            'GBAGEFREG',//Fecha registro
             'GBAGEPLAZ',
             'GBAGEAGEN',
             'GBAGEUSER',
@@ -123,7 +122,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
         case 
         when par_tipoper = 'NA' then 1
         else 2 
-        end as par_tipoper,fecha_nac,
+        end as par_tipoper,to_char(fecha_nac,'DD/MM/YYYY') as fecha_nac,
         case 
         when par_sexo ='M' then 1
         else 2 end as par_sexo,
@@ -141,16 +140,16 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
         substring(calleavdom,61,30 ) as calleavdom3,
         teldom,
         celular,
-        fecha_inscripcion,
+        to_char(fecha_inscripcion,'DD/MM/YYYY') as fecha_inscripcion,
         usuario_reg,
         fecha_reg::timestamp::time as hora_reg,
-        fecha_reg::timestamp::date,
+        to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
         SPLIT_PART(nrodoc, '-', 2) as extci"))->orderByRaw('id_persona::numeric asc')->get();
     return $personas;
     }
 
     public function title(): string
     {
-        return 'Gbage';
+        return 'gbage';
     }
 }
