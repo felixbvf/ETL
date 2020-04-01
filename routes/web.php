@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 Route::get('export','PersonaController@ExportPersona');
+Route::get('export_prestamos','PrestamoController@ExportPrestamo');
