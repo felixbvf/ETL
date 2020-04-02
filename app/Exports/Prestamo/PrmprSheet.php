@@ -15,7 +15,7 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 {
     public function collection() //Obteniendo datos de prestamos
     {
-        $prestamos = Prestamo::Select(DB::raw("id_prestamo,id_persona,fecha_registro_prestamo,no_resolucion,id_producto,id_ejecutivo_aut,id_ejecutivo_res,
+        $prestamos = Prestamo::Select(DB::raw("id_prestamo,id_persona,to_char(fecha_registro_prestamo::timestamp::date,'DD/MM/YYYY') as fecha_registro_prestamo,no_resolucion,id_producto,id_ejecutivo_aut,id_ejecutivo_res,
         par_destino,caedec,
          CASE
                 WHEN par_moneda = 'Bs' then 1
@@ -24,10 +24,11 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
          CASE 
                  WHEN par_forma_pago = 'ALEM' then 3
                  else 2
-                 end as par_forma_pago,periodo_pago_capital,periodo_pago_intereses,dia_pago,fecha_primera_cuota,
-                 (SELECT COALESCE(sum(pd.importe), 0::numeric) AS importe
-                   FROM finanzas.ptm_tr_detalle pd
-                  WHERE pd.par_concepto_op::text = 'CAP'::text AND pd.par_estado::text = 'A'::text AND pd.id_prestamo::text = finanzas.ptm_prestamos.id_prestamo::text) AS saldo_actual,
+                 end as par_forma_pago,
+        periodo_pago_capital,periodo_pago_intereses,dia_pago,to_char(fecha_primera_cuota::timestamp::date,'DD/MM/YYYY') as fecha_primera_cuota,
+        (SELECT COALESCE(sum(pd.importe), 0::numeric) AS importe
+        FROM finanzas.ptm_tr_detalle pd
+        WHERE pd.par_concepto_op::text = 'CAP'::text AND pd.par_estado::text = 'A'::text AND pd.id_prestamo::text = finanzas.ptm_prestamos.id_prestamo::text) AS saldo_actual,
         imp_desembolsado,
          case 
                  when id_estado = 'VIG' then 2
@@ -35,13 +36,15 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
                  when id_estado = 'EJE' then 6
                  else 7
                  end as id_estado,
-        fecha_cambio_estado,fecha_desembolso,fecha_ultimo_pago,no_reprogramacion,fecha_reprogramacion,
+        to_char(fecha_cambio_estado::timestamp::date,'DD/MM/YYYY') as fecha_cambio_estado,to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY') as fecha_desembolso,to_char(fecha_ultimo_pago::timestamp::date,'DD/MM/YYYY') as fecha_ultimo_pago,
+        no_reprogramacion,to_char(fecha_reprogramacion::timestamp::date,'DD/MM/YYYY') as fecha_reprogramacion,
         case 
                 when par_estado = 'A' then 0
                 else 9
                 end as par_estado,
         usuario_reg,fecha_reg::timestamp::time as hora_reg,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
-        fecha_incumplimiento_pp,par_tipo_credito_asfi,calificacion_automatica"))
+        to_char(fecha_incumplimiento_pp::timestamp::date,'DD/MM/YYYY') as fecha_incumplimiento_pp,
+        par_tipo_credito_asfi,calificacion_automatica"))
         ->whereRaw("eliminado::text = 'N'::text")->orderByRaw("id_persona::numeric asc")->get();
         
         return $prestamos;
