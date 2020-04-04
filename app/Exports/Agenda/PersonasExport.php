@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\Agenda;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -16,8 +16,8 @@ class PersonasExport implements WithMultipleSheets
         $sheets = [];
         $sheets[] = new GbageSheet();  //Agenda
         $sheets[] = new GbdacSheet();  //Datos adicionales
-        $sheets[] = new GbdocSheet(); 
-        $sheets[] = new GblabSheet();
+        $sheets[] = new GbdocSheet();  // Datos de Identificacion
+        $sheets[] = new GblabSheet();  // 
         return $sheets;
     }
    

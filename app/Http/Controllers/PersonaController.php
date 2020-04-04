@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Exports\PersonasExport;
+use App\Exports\Agenda\PersonasExport;
 use Maatwebsite\Excel\Facades\Excel;
 class PersonaController extends Controller
 {

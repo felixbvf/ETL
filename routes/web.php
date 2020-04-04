@@ -17,5 +17,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('export','PersonaController@ExportPersona');
+Route::get('export_agenda','PersonaController@ExportPersona');
 Route::get('export_prestamos','PrestamoController@ExportPrestamo');

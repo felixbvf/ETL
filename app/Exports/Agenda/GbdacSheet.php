@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\Agenda;
 use DB;
 use App\Gbpersona;
 use Maatwebsite\Excel\Concerns\FromCollection;
