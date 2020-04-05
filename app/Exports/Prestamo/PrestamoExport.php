@@ -22,13 +22,12 @@ class PrestamoExport implements WithMultipleSheets
         ini_set('max_execution_time', '-1');
         ini_set('max_input_time', '-1');
         set_time_limit('-1');
-        $sheets = [];
-        //dd($this->num1."-".$this->num2);
+        /*$sheets = [];
         $sheets[] = new PrmprSheet();  //Maestro Prestamos
         $sheets[] = new PrcgcSheet();  //Cargos-Seguros
         $sheets[] = new PrdeuSheet();  //Deudores
-        //$sheets[] = new PrppgSheet();  // Plan de Pagos
-        $sheets[] = new PrtsaSheet();  // Tasas
+        $sheets[] = new PrtsaSheet();  // Tasas*/
+        $sheets[] = new PrppgSheet();  // Plan de Pagos
         return $sheets;
     }
    

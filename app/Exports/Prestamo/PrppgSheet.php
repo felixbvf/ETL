@@ -3,6 +3,7 @@
 namespace App\Exports\Prestamo;
 
 use App\Prppg;
+use App\Producto;
 use DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -29,14 +30,15 @@ class PrppgSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
                         ->offset(500000)->limit(500000)->get();*/
         //$prppg = Prppg::Select(DB::raw(""))->whereRaw("par_estado = 'A'")->get();
         //dd($this->num1."-".$this->num2);
-        $prppg = DB::select(DB::raw("SELECT * FROM (
-            SELECT id_prestamo,numero_cuota,to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') as fecha_cuota,numero_cuota,importe_capital,importe_interes,importe_cargos,total_cuota, ROW_NUMBER () OVER (ORDER BY id_prestamo)
-            FROM finanzas.ptm_plan_pagos
-          ) x 
-        WHERE ROW_NUMBER BETWEEN 7 AND 13"));
+        //how to fix call to a member function get() on array  --> convert to Collect($array);
+        $prppg = DB::select(DB::raw("SELECT * FROM (SELECT id_prestamo,numero_cuota,to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') as fecha_cuota,numero_cuota,importe_capital,importe_interes,importe_cargos,total_cuota, ROW_NUMBER () OVER (ORDER BY id_prestamo) 
+        FROM finanzas.ptm_plan_pagos) x WHERE ROW_NUMBER BETWEEN 7 AND 13"));
         //WHERE ROW_NUMBER BETWEEN ".$this->num1." AND ".$this->num2))->get();
+        //$prppg = Producto::all();
         
-        return $prppg; //Plan de pagos
+       // dd($prppg);
+
+        return collect($prppg); //Plan de pagos
     }
 
     public function title(): string
@@ -50,7 +52,7 @@ class PrppgSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $prppg->fecha_cuota,        //Fecha programada de pago
             $prppg->numero_cuota,       //Numero de pago
             $prppg->importe_capital,    //Importe programado de pago a Capital
-            $prppg->importe_insteres,   //Importe programado de pago a Interes
+            $prppg->importe_interes,   //Importe programado de pago a Interes
             $prppg->importe_cargos,     //Importe programado de pago por Cargos Generales
             '0',                    //Importe programado de pago por Seguro
             '0',                    //Importe programado de pago por Otros Cargos
