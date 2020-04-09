@@ -16,7 +16,7 @@ class PrcgcSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     {
         $prcgc = Prcgc::Select(DB::raw("case 
         when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else SPLIT_PART(id_prestamo, '-', 2)
+        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
         end as id_prestamo,id_cargo_adicional,monto,par_estado,usuario_reg,fecha_reg::timestamp::time as hora_reg, to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg"))->get();
         return $prcgc; //Cargos-Seguros
     }

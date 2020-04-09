@@ -17,7 +17,7 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     {
         $prestamos = Prestamo::Select(DB::raw("case 
         when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else SPLIT_PART(id_prestamo, '-', 2)
+        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
         end as id_prestamo,id_persona,to_char(fecha_registro_prestamo::timestamp::date,'DD/MM/YYYY') as fecha_registro_prestamo,no_resolucion,id_producto,id_ejecutivo_aut,id_ejecutivo_res,
         par_destino,caedec,
          CASE

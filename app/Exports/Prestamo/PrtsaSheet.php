@@ -18,7 +18,7 @@ class PrtsaSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     {
         $prtsa = Prestamo::Select(DB::raw("case 
         when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else SPLIT_PART(id_prestamo, '-', 2)
+        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
         end as id_prestamo,to_char(fecha_registro_prestamo::timestamp::date,'DD/MM/YYYY') as fecha_registro_prestamo,tasa_base,usuario_reg,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,fecha_reg::timestamp::time as hora_reg"))
                         ->whereRaw("par_estado = 'A'")->get();
         return $prtsa; //TASAS
