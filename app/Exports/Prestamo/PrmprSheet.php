@@ -15,7 +15,10 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 {
     public function collection() //Obteniendo datos de prestamos
     {
-        $prestamos = Prestamo::Select(DB::raw("id_prestamo,id_persona,to_char(fecha_registro_prestamo::timestamp::date,'DD/MM/YYYY') as fecha_registro_prestamo,no_resolucion,id_producto,id_ejecutivo_aut,id_ejecutivo_res,
+        $prestamos = Prestamo::Select(DB::raw("case 
+        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
+        else SPLIT_PART(id_prestamo, '-', 2)
+        end as id_prestamo,id_persona,to_char(fecha_registro_prestamo::timestamp::date,'DD/MM/YYYY') as fecha_registro_prestamo,no_resolucion,id_producto,id_ejecutivo_aut,id_ejecutivo_res,
         par_destino,caedec,
          CASE
                 WHEN par_moneda = 'Bs' then 1

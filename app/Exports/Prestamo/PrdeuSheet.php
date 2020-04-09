@@ -15,7 +15,10 @@ class PrdeuSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 {
     public function collection()
     {
-        $prdeu = Prdeu::Select(DB::raw("id_prestamo,id_cliente,
+        $prdeu = Prdeu::Select(DB::raw("case 
+        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
+        else SPLIT_PART(id_prestamo, '-', 2)
+        end as id_prestamo,id_cliente,
                 case 
                     when par_tipo_relacion = 'GARAN' then '2'
                     else 1

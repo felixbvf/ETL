@@ -9,12 +9,17 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
-class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMapping,WithTitle
+class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadings,ShouldAutoSize,WithMapping,WithTitle,WithCustomValueBinder
 {   
     public function map($personas) : array { //COLUMNAS A EXPORTAR
         return [
-            $personas->id_persona,
+            $personas->id,
             $personas->nombrecompleto,
             $personas->par_tipodoc,
             $personas->nrodoc,
@@ -24,7 +29,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $personas->par_sexo,
             $personas->par_estadocivil,
             $personas->nacionalidad,
-            '76',
+            76,
             $personas->calleavdom1,
             $personas->calleavdom2,
             $personas->calleavdom3,
@@ -34,18 +39,18 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             '',
             '',
             '',
-            '75220',
+            75220,
             '',
             '',
             '', //Calificacion cliente
             $personas->fecha_inscripcion, //Fecha registro
-            '20',
-            '20',
+            20,
+            20,
             $personas->usuario_reg,
             $personas->hora_reg,
             $personas->fecha_reg,
-            '1',
-            '1', //Estado del cliente
+            1,
+            1, //Estado del cliente
             '',
             '',
             '',
@@ -53,9 +58,16 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             '', //usuario que modifico
             '',
             '',
-            '0',
-            $personas->extci
-        
+            0,
+            $personas->extci,
+            $personas->destino,
+            $personas->par_profesion,
+            $personas->referencia_bancaria,
+            $personas->numero_cta_bancaria,
+            $personas->referencia_bancaria2,
+            $personas->numero_cta_bancaria2,
+            $personas->referencia_bancaria3,
+            $personas->numero_cta_bancaria3
         ] ;
  
  
@@ -103,8 +115,15 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             'GBAGEFMOD',
             'GBAGEFMRC',
             'GBAGEMRCB', //Marca baja (0-->Activo, 9-->Dado de baja)
-            'GBAGECOMP' //Complemento de CI(extension)
-            
+            'GBAGECOMP', //Complemento de CI(extension)
+            'destino',
+            'cargos',
+            'referencia_bancaria',
+            'numero_cta_bancaria',
+            'referencia_bancaria2',
+            'numero_cta_bancaria2',
+            'referencia_bancaria3',
+            'numero_cta_bancaria3'
         ];
     }
 
@@ -113,7 +132,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     public function collection()
     {
         // CONSULTA DE PERSONAS
-        $personas = Gbpersona::Select(DB::raw("id_persona, nombrecompleto,
+        $personas = Gbpersona::Select(DB::raw("id_persona::numeric as id, nombrecompleto,
         CASE
         WHEN par_tipodoc = 'LMI' THEN 11
         WHEN par_tipodoc= 'CI' THEN 1
@@ -144,7 +163,7 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
         usuario_reg,
         fecha_reg::timestamp::time as hora_reg,
         to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
-        SPLIT_PART(nrodoc, '-', 2) as extci"))->orderByRaw('id_persona::numeric asc')->get();
+        SPLIT_PART(nrodoc, '-', 2) as extci,destino,par_profesion,referencia_bancaria,numero_cta_bancaria,referencia_bancaria2,numero_cta_bancaria2,referencia_bancaria2,numero_cta_bancaria3"))->orderByRaw('id_persona::numeric asc')->get();
     return $personas;
     }
 
@@ -152,4 +171,17 @@ class GbageSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     {
         return 'gbage';
     }
+
+    public function bindValue(Cell $cell, $value)
+    {   
+        
+            if (is_string($value)) {
+                $cell->setValueExplicit($value, DataType::TYPE_STRING);
+    
+                return true;
+            }
+            // else return default behavior
+            return parent::bindValue($cell, $value);  
+    }
+
 }

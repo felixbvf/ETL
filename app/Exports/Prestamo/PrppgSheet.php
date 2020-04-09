@@ -15,35 +15,35 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 class PrppgSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMapping,WithTitle
 {   
     
-    /*private $num1;
+    private $num1;
     private $num2;
+    private $i;
 
-    public function __construct(int $num1, int $num2)
+    public function __construct(int $num1, int $num2,$i)
     {
         $this->num1 = $num1;
         $this->num2 = $num2;
-    }*/
+        $this->i = $i;
+    }
 
     public function collection()
     {
-        /*$prppg = Prppg::Select(DB::raw("id_prestamo,to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') as fecha_cuota,numero_cuota,importe_capital,importe_interes,importe_cargos,total_cuota"))->whereRaw("par_estado = 'A'")
-                        ->offset(500000)->limit(500000)->get();*/
-        //$prppg = Prppg::Select(DB::raw(""))->whereRaw("par_estado = 'A'")->get();
-        //dd($this->num1."-".$this->num2);
         //how to fix call to a member function get() on array  --> convert to Collect($array);
-        $prppg = DB::select(DB::raw("SELECT * FROM (SELECT id_prestamo,numero_cuota,to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') as fecha_cuota,numero_cuota,importe_capital,importe_interes,importe_cargos,total_cuota, ROW_NUMBER () OVER (ORDER BY id_prestamo) 
-        FROM finanzas.ptm_plan_pagos) x WHERE ROW_NUMBER BETWEEN 7 AND 13"));
-        //WHERE ROW_NUMBER BETWEEN ".$this->num1." AND ".$this->num2))->get();
-        //$prppg = Producto::all();
-        
-       // dd($prppg);
+        $prppg = DB::select(DB::raw("SELECT * FROM (SELECT case 
+        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
+        else SPLIT_PART(id_prestamo, '-', 2)
+        end as id_prestamo,numero_cuota,to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') as fecha_cuota,numero_cuota,importe_capital,importe_interes,importe_cargos,total_cuota, ROW_NUMBER () OVER (ORDER BY id_prestamo) 
+        FROM finanzas.ptm_plan_pagos) x 
+        WHERE ROW_NUMBER BETWEEN ".$this->num1." AND ".$this->num2));
+        /*WHERE ROW_NUMBER BETWEEN 7 AND 13"));*/
+    
 
         return collect($prppg); //Plan de pagos
     }
 
     public function title(): string
     {
-        return 'prppg';
+        return 'prppg'.$this->i;
     }
 
     public function map($prppg) : array { //Mapeo de datos plan de pagos
