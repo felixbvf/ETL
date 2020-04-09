@@ -34,7 +34,7 @@ class GagarSheet extends DefaultValueBinder implements FromCollection,WithHeadin
         case 
         when id_tipo_garantia = '000079' then ''
         else substring(no_garantia,1,1)
-        end as departamento, descripcion,fecha_reg::timestamp::time as hora_reg"))->get();
+        end as departamento, descripcion,fecha_reg::timestamp::time as hora_reg,usuario_reg"))->get();
         return $gagar; //Maestro Garantias
     }
 
