@@ -62,12 +62,12 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
             $personas->extci,
             $personas->destino,
             $personas->par_profesion,
-            $personas->referencia_bancaria,
+            /*$personas->referencia_bancaria,
             $personas->numero_cta_bancaria,
             $personas->referencia_bancaria2,
             $personas->numero_cta_bancaria2,
             $personas->referencia_bancaria3,
-            $personas->numero_cta_bancaria3
+            $personas->numero_cta_bancaria3*/
         ] ;
  
  
@@ -118,12 +118,12 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
             'GBAGECOMP', //Complemento de CI(extension)
             'destino',
             'cargos',
-            'referencia_bancaria',
+            /*'referencia_bancaria',
             'numero_cta_bancaria',
             'referencia_bancaria2',
             'numero_cta_bancaria2',
             'referencia_bancaria3',
-            'numero_cta_bancaria3'
+            'numero_cta_bancaria3'*/
         ];
     }
 
@@ -137,7 +137,7 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
         WHEN par_tipodoc = 'LMI' THEN 11
         WHEN par_tipodoc= 'CI' THEN 1
         ELSE 1
-        end as par_tipodoc, nrodoc,
+        end as par_tipodoc, replace(nrodoc,'-','') || par_lugarexp as nrodoc,
         case 
         when par_tipoper = 'NA' then 1
         else 2 
@@ -163,7 +163,7 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
         usuario_reg,
         fecha_reg::timestamp::time as hora_reg,
         to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
-        SPLIT_PART(nrodoc, '-', 2) as extci,destino,par_profesion,referencia_bancaria,numero_cta_bancaria,referencia_bancaria2,numero_cta_bancaria2,referencia_bancaria2,numero_cta_bancaria3"))->orderByRaw('id_persona::numeric asc')->get();
+        SPLIT_PART(nrodoc, '-', 2) as extci,destino,par_profesion"))->orderByRaw('id_persona::numeric asc')->get();
     return $personas;
     }
 

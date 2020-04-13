@@ -18,6 +18,7 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $gbdoc->nrodoc,
             $gbdoc->fecha_exp,
             '',
+            '',
             $gbdoc->fecha_reg,
             '20',
             '20',
@@ -34,8 +35,9 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             'gbdoccage', //codigo agenda
             'gbdocndid', //numero de identidad
             'gbdocfvid', // fecha vencimiento CI
-            'gbdocnruc',
-            'gbdocfreg',  //fecha de registro
+            'gbdocnruc', //Numero de RUC
+            'gbdocfvru', //Fecha de Vencimiento de RUC
+            'gbdocfreg', //fecha de registro
             'gbdocplaz', //Plaza = 20
             'gbdocagen', //Agencia
             'gbdocuser',
@@ -46,7 +48,7 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     }
     public function collection()
     {
-        $gbdoc = Gbpersona::Select(DB::raw("id_persona, nrodoc,to_char(fecha_exp,'DD/MM/YYYY') as fecha_exp,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_reg,fecha_reg::timestamp::time as hora_reg"))->orderByRaw('id_persona::numeric asc')->get();
+        $gbdoc = Gbpersona::Select(DB::raw("id_persona, replace(nrodoc,'-','') || par_lugarexp as nrodoc,to_char(fecha_exp,'DD/MM/YYYY') as fecha_exp,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_reg,fecha_reg::timestamp::time as hora_reg"))->orderByRaw('id_persona::numeric asc')->get();
         return $gbdoc;
     }
 
