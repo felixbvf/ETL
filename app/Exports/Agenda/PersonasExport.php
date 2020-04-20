@@ -18,6 +18,7 @@ class PersonasExport implements WithMultipleSheets
         $sheets[] = new GbdacSheet();  //Datos adicionales
         $sheets[] = new GbdocSheet();  // Datos de Identificacion
         $sheets[] = new GblabSheet();  // 
+        $sheets[] = new GbragSheet();  // Referencias bancarias
         return $sheets;
     }
    
