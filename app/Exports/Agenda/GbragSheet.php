@@ -33,7 +33,11 @@ class GbragSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
         when (strpos(upper(ref1),'BNB') > 0) then 'BANCO NACIONAL DE BOLIVIA'
         else upper(ref1)
         end as ref1, NULLIF(regexp_replace(cuenta, '\D','','g'), '')::numeric AS cuenta,nro,usuario_reg,fecha_reg,hora_reg 
-        from global.v_ref_cuenta_bancaria where (NULLIF(regexp_replace(cuenta, '\D','','g'), '')::numeric) > 100
+        from global.v_ref_cuenta_bancaria 
+        where (NULLIF(regexp_replace(cuenta, '\D','','g'), '')::numeric) > 100 and 
+        (exists(select id_persona from finanzas.ptm_prestamos where par_estado ='A' and par_estado_prestamo ='DESEM' and id_persona = global.v_ref_cuenta_bancaria.id_persona)
+        or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.v_ref_cuenta_bancaria.id_persona 
+        and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION')))
         order by id_persona::numeric,nro asc;"));   
 
         return collect($gbrag); //REFERENCIAS BANCARIAS

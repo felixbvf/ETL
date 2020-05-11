@@ -18,23 +18,27 @@ class GagarSheet extends DefaultValueBinder implements FromCollection,WithHeadin
 {
     public function collection()
     {
-        $gagar = Gagar::Select(DB::raw("case 
-        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
-        end as id_prestamo,
-        case 
-        when id_tipo_garantia = '000047' then 'HC1'
-        when id_tipo_garantia = '000064' then 'HO1'
-        else 'HV1'
-        end as id_tipo_garantia,
-        (select id_persona from finanzas.ptm_prestamos where id_prestamo = finanzas.ptm_garantias.id_prestamo) as id_persona,
-        to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,fecha_reg::timestamp::time as hora_reg,valor_garantia,par_moneda,usuario_mod,valor_garantia_otras_entidades,valor_garantia_favor_entidad,
-        (select max(to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') )from finanzas.ptm_plan_pagos where id_prestamo = finanzas.ptm_garantias.id_prestamo) as fecha_ultima_cuota,
-        no_garantia,to_char(fecha_inscripcion_garantia::timestamp::date,'DD/MM/YYYY') as fecha_inscripcion_garantia,
-        case 
-        when id_tipo_garantia = '000079' then ''
-        else substring(no_garantia,1,1)
-        end as departamento, descripcion,fecha_reg::timestamp::time as hora_reg,usuario_reg"))->get();
+        $gagar = Gagar::leftJoin('finanzas.ptm_prestamos','ptm_garantias.id_prestamo','=','ptm_prestamos.id_prestamo')
+                ->Select(DB::raw("case 
+                when (strpos(ptm_garantias.id_prestamo,'-') = '0') then ptm_garantias.id_prestamo 
+                else LTRIM(SPLIT_PART(ptm_garantias.id_prestamo, '-', 2),'0')
+                end as id_prestamo,
+                case 
+                when ptm_garantias.id_tipo_garantia = '000047' then 'HC1'
+                when ptm_garantias.id_tipo_garantia = '000064' then 'HO1'
+                else 'HV1'
+                end as id_tipo_garantia,
+                (select id_persona from finanzas.ptm_prestamos where id_prestamo = finanzas.ptm_garantias.id_prestamo) as id_persona,
+                to_char(ptm_garantias.fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,ptm_garantias.fecha_reg::timestamp::time as hora_reg,ptm_garantias.valor_garantia,ptm_garantias.par_moneda,ptm_garantias.usuario_mod,ptm_garantias.valor_garantia_otras_entidades,ptm_garantias.valor_garantia_favor_entidad,
+                (select max(to_char(fecha_cuota::timestamp::date,'DD/MM/YYYY') )from finanzas.ptm_plan_pagos where id_prestamo = finanzas.ptm_garantias.id_prestamo) as fecha_ultima_cuota,
+                ptm_garantias.no_garantia,to_char(ptm_garantias.fecha_inscripcion_garantia::timestamp::date,'DD/MM/YYYY') as fecha_inscripcion_garantia,
+                case 
+                when ptm_garantias.id_tipo_garantia = '000079' then ''
+                else substring(ptm_garantias.no_garantia,1,1)
+                end as departamento, ptm_garantias.descripcion,ptm_garantias.fecha_reg::timestamp::time as hora_reg,ptm_garantias.usuario_reg"))
+                ->where('ptm_prestamos.par_estado','=','A')
+                ->where('ptm_prestamos.par_estado_prestamo','=','DESEM')
+                ->get();
         return $gagar; //Maestro Garantias
     }
 

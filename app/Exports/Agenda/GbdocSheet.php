@@ -48,7 +48,11 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     }
     public function collection()
     {
-        $gbdoc = Gbpersona::Select(DB::raw("id_persona, replace(nrodoc,'-','') || par_lugarexp as nrodoc,to_char(fecha_exp,'DD/MM/YYYY') as fecha_exp,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_reg,fecha_reg::timestamp::time as hora_reg"))->orderByRaw('id_persona::numeric asc')->get();
+        $gbdoc = Gbpersona::Select(DB::raw("id_persona, replace(nrodoc,'-','') || par_lugarexp as nrodoc,to_char(fecha_exp,'DD/MM/YYYY') as fecha_exp,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_reg,fecha_reg::timestamp::time as hora_reg"))
+                ->whereRaw("exists(select id_persona from finanzas.ptm_prestamos where par_estado ='A' and par_estado_prestamo ='DESEM' and id_persona = global.gbpersona.id_persona)
+                or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.gbpersona.id_persona 
+                and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION'))")
+                ->orderByRaw('id_persona::numeric asc')->get();
         return $gbdoc;
     }
 

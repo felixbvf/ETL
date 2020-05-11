@@ -15,16 +15,20 @@ class PrdeuSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 {
     public function collection()
     {
-        $prdeu = Prdeu::Select(DB::raw("case 
-        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
-        end as id_prestamo,id_cliente,
+        $prdeu = Prdeu::leftJoin('finanzas.ptm_prestamos','finanzas.ptm_obligados.id_prestamo','=','ptm_prestamos.id_prestamo')
+        ->Select(DB::raw("case 
+        when (strpos(ptm_obligados.id_prestamo,'-') = '0') then ptm_obligados.id_prestamo 
+        else LTRIM(SPLIT_PART(ptm_obligados.id_prestamo, '-', 2),'0')
+        end as id_prestamo,ptm_obligados.id_cliente,
                 case 
-                    when par_tipo_relacion = 'GARAN' then '2'
+                    when ptm_obligados.par_tipo_relacion = 'GARAN' then '2'
                     else 1
                     end as par_tipo_relacion,
-                usuario_reg,fecha_reg::timestamp::time as hora_reg,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg"))->whereRaw("par_estado = 'A'")
-                ->get();
+                    ptm_obligados.usuario_reg,ptm_obligados.fecha_reg::timestamp::time as hora_reg,to_char(ptm_obligados.fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg"))
+        ->where('ptm_obligados.par_estado','=','A')
+        ->where('ptm_prestamos.par_estado','=','A')
+        ->where('ptm_prestamos.par_estado_prestamo','=','DESEM')
+        ->get();
         return $prdeu; //Deudores
     }
 

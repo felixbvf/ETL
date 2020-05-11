@@ -27,6 +27,7 @@ class PrestamoExport implements WithMultipleSheets
         $sheets[] = new PrcgcSheet();  //Cargos-Seguros
         $sheets[] = new PrdeuSheet();  //Deudores
         $sheets[] = new PrtsaSheet();  // Tasas
+        $sheets[] = new PrppgSheet();  // Plan de Pagos
         return $sheets;
     }
    

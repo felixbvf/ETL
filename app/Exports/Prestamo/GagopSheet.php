@@ -14,20 +14,24 @@ class GagopSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 {
     public function collection()
     {
-        $gagop = Gagar::Select(DB::raw("case 
-        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
-        end as id_prestamo,
-        case 
-        when id_tipo_garantia = '000047' then 'HC1'
-        when id_tipo_garantia = '000064' then 'HO1'
-        else 'HV1'
-        end as id_tipo_garantia, par_moneda,
-        (SELECT COALESCE(sum(ptm_tr_detalle.importe), 0::numeric) AS importe
-          FROM finanzas.ptm_tr_detalle
-         WHERE ptm_tr_detalle.par_concepto_op::text = 'CAP'::text AND ptm_tr_detalle.par_estado::text = 'A'::text AND ptm_tr_detalle.id_prestamo::text = finanzas.ptm_garantias.id_prestamo::text) AS saldo,
-       valor_garantia,valor_garantia_favor_entidad,(valor_garantia/6.86) as importe,
-        to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_mod,valor_garantia_otras_entidades,usuario_reg,fecha_reg::timestamp::time as hora_reg"))->get();
+        $gagop = Gagar::leftJoin('finanzas.ptm_prestamos','ptm_garantias.id_prestamo','=','ptm_prestamos.id_prestamo')
+                ->Select(DB::raw("case 
+                when (strpos(ptm_garantias.id_prestamo,'-') = '0') then ptm_garantias.id_prestamo 
+                else LTRIM(SPLIT_PART(ptm_garantias.id_prestamo, '-', 2),'0')
+                end as id_prestamo,
+                case 
+                when ptm_garantias.id_tipo_garantia = '000047' then 'HC1'
+                when ptm_garantias.id_tipo_garantia = '000064' then 'HO1'
+                else 'HV1'
+                end as id_tipo_garantia,ptm_garantias.par_moneda,
+                (SELECT COALESCE(sum(ptm_tr_detalle.importe), 0::numeric) AS importe
+                FROM finanzas.ptm_tr_detalle
+                WHERE ptm_tr_detalle.par_concepto_op::text = 'CAP'::text AND ptm_tr_detalle.par_estado::text = 'A'::text AND ptm_tr_detalle.id_prestamo::text = finanzas.ptm_garantias.id_prestamo::text) AS saldo,
+                ptm_garantias.valor_garantia,ptm_garantias.valor_garantia_favor_entidad,(ptm_garantias.valor_garantia/6.86) as importe,
+                to_char(ptm_garantias.fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,ptm_garantias.usuario_mod,ptm_garantias.valor_garantia_otras_entidades,ptm_garantias.usuario_reg,ptm_garantias.fecha_reg::timestamp::time as hora_reg"))
+                ->where('ptm_prestamos.par_estado','=','A')
+                ->where('ptm_prestamos.par_estado_prestamo','=','DESEM')
+                ->get();
         
         return $gagop; //Garantia Operacion
     }

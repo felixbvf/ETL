@@ -13,7 +13,7 @@ class PlanpagosExport implements WithMultipleSheets
         ini_set('max_execution_time', '-1');
         ini_set('max_input_time', '-1');
         set_time_limit('-1');
-        $i=1;
+       /* $i=1;
         $n=6;
         $total = Prppg::count();
         $cantdiv = $total/$n;
@@ -34,6 +34,6 @@ class PlanpagosExport implements WithMultipleSheets
         $ini6 = (floor($cantdiv)*5) + $i;
         $fin6 = (floor($cantdiv)*6) + $restante;
         $sheets[] = new PrppgSheet($ini6,$fin6,6);  // Plan de Pagos6
-        return $sheets;
+        return $sheets;*/
     }
 }

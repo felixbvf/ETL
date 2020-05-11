@@ -14,10 +14,15 @@ class PrcgcSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
     
     public function collection()
     {
-        $prcgc = Prcgc::Select(DB::raw("case 
-        when (strpos(id_prestamo,'-') = '0') then id_prestamo 
-        else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
-        end as id_prestamo,id_cargo_adicional,monto,par_estado,usuario_reg,fecha_reg::timestamp::time as hora_reg, to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg"))->get();
+        $prcgc = Prcgc::leftJoin('finanzas.ptm_prestamos','ptm_prestamos_cargos_ad.id_prestamo','=','ptm_prestamos.id_prestamo')
+        ->Select(DB::raw("case 
+        when (strpos(ptm_prestamos_cargos_ad.id_prestamo,'-') = '0') then ptm_prestamos_cargos_ad.id_prestamo 
+        else LTRIM(SPLIT_PART(ptm_prestamos_cargos_ad.id_prestamo, '-', 2),'0')
+        end as id_prestamo,ptm_prestamos_cargos_ad.id_cargo_adicional,ptm_prestamos_cargos_ad.monto,ptm_prestamos_cargos_ad.par_estado,ptm_prestamos_cargos_ad.usuario_reg,ptm_prestamos_cargos_ad.fecha_reg::timestamp::time as hora_reg, to_char(ptm_prestamos_cargos_ad.fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg"))
+        ->where('ptm_prestamos_cargos_ad.par_estado','=','A')
+        ->where('ptm_prestamos.par_estado','=','A')
+        ->where('ptm_prestamos.par_estado_prestamo','=','DESEM')
+        ->get();
         return $prcgc; //Cargos-Seguros
     }
 
