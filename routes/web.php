@@ -22,3 +22,4 @@ Route::get('export_agenda','PersonaController@ExportPersona');
 Route::get('export_prestamos','PrestamoController@ExportPrestamo');
 Route::get('export_planpagos','PrestamoController@ExportPlanpagos');
 Route::get('export_garantias','PrestamoController@ExportGarantias');
+Route::get('export_aportes','AporteController@ExportAporte');
