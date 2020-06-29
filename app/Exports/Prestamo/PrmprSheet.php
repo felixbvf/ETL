@@ -19,7 +19,11 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
         when (strpos(id_prestamo,'-') = '0') then id_prestamo 
         else LTRIM(SPLIT_PART(id_prestamo, '-', 2),'0')
         end as id_prestamo,id_persona,to_char(fecha_registro_prestamo::timestamp::date,'DD/MM/YYYY') as fecha_registro_prestamo,no_resolucion,id_producto,id_ejecutivo_aut,id_ejecutivo_res,
-        par_destino,caedec,
+        par_destino,
+        case 
+            when caedec is null then '75232'
+            else SUBSTRING(caedec,2,5) 
+        end as caedec,
          CASE
                 WHEN par_moneda = 'Bs' then 1
                 ELSE 2
