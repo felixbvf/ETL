@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadings,ShouldAutoSize,WithMapping,WithTitle,WithCustomValueBinder
 {   
     public function map($personas) : array { //COLUMNAS A EXPORTAR
+        
         return [
             $personas->id,
             $personas->nombrecompleto,
@@ -168,6 +169,9 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
         or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.gbpersona.id_persona 
         and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION'))")
         ->orderByRaw('id_persona::numeric asc')->get();
+    
+    //PREPARAR ARRAY DE OBJETOS PERSONAL
+
     return $personas;
     }
 

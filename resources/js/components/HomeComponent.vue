@@ -4,8 +4,10 @@
       v-model="drawer"
       :clipped="$vuetify.breakpoint.lgAndUp"
       app
+      class="blue-grey darken-3"
+      dark
     >
-      <v-list dense>
+    <v-list dense>
         <template v-for="item in items">
           <v-row
             v-if="item.heading"
@@ -219,6 +221,23 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    
+    <v-footer
+      color="blue darken-3"
+      dark
+    >
+      <v-row
+        justify="center"
+        no-gutters
+      >
+        <v-col
+          class="blue darken-3 py-4 text-center white--text"
+          cols="12"
+        >
+          <strong>Gestión {{ new Date().getFullYear() }} — MUGEBUSCH — DPTO. INFORMÁTICA Y COMUNICACIONES</strong> 
+       </v-col>
+      </v-row>
+   </v-footer>
   </v-app>
 </template>
 
@@ -231,9 +250,11 @@
       dialog: false,
       drawer: null,
       items: [
-        { icon: 'mdi-contacts', text: 'Contacts' },
-        { icon: 'mdi-history', text: 'Frequently contacted' },
-        { icon: 'mdi-content-copy', text: 'Duplicates' },
+        { icon: 'mdi-contacts', text: 'Parametros' },
+        { icon: 'mdi-history', text: 'Agenda' },
+        { icon: 'mdi-content-copy', text: 'Préstamos' },
+        { icon: 'mdi-settings', text: 'Garantias de Prestamos' },
+        { icon: 'mdi-message', text: 'Aportes de Afiliados' },
         {
           icon: 'mdi-chevron-up',
           'icon-alt': 'mdi-chevron-down',
@@ -256,8 +277,6 @@
             { text: 'Other contacts' },
           ],
         },
-        { icon: 'mdi-settings', text: 'Settings' },
-        { icon: 'mdi-message', text: 'Send feedback' },
         { icon: 'mdi-help-circle', text: 'Help' },
         { icon: 'mdi-cellphone-link', text: 'App downloads' },
         { icon: 'mdi-keyboard', text: 'Go to the old version' },

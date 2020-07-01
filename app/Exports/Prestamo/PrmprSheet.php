@@ -43,7 +43,11 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
                  when id_estado = 'EJE' then 6
                  else 7
                  end as id_estado,
-        to_char(fecha_cambio_estado::timestamp::date,'DD/MM/YYYY') as fecha_cambio_estado,to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY') as fecha_desembolso,to_char(fecha_ultimo_pago::timestamp::date,'DD/MM/YYYY') as fecha_ultimo_pago,
+        CASE
+            WHEN fecha_cambio_estado is null AND id_estado = 'VIG' THEN  to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY')
+            else  to_char(fecha_cambio_estado::timestamp::date,'DD/MM/YYYY')
+            end as fecha_cambio_estado,
+        to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY') as fecha_desembolso,to_char(fecha_ultimo_pago::timestamp::date,'DD/MM/YYYY') as fecha_ultimo_pago,
         no_reprogramacion,to_char(fecha_reprogramacion::timestamp::date,'DD/MM/YYYY') as fecha_reprogramacion,
         case 
                 when par_estado = 'A' then 0
