@@ -171,7 +171,9 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
         ->orderByRaw('id_persona::numeric asc')->get();
     
     //PREPARAR ARRAY DE OBJETOS PERSONAL
-
+    $total = CountClient();
+    $lista_funcionarios = importFuncionario();
+    //array_push($rows, array($i, $a->code));
     return $personas;
     }
 
