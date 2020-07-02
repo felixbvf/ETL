@@ -103,7 +103,7 @@ use Illuminate\Support\Facades\Log;
         foreach ($rows as $item) {
             foreach ($item as $item1) {
             $cont = CountClient() + $i;
-           // id	nombrecompleto	par_tipodoc	nrodoc	par_tipoper	fecha_nac	par_sexo	par_estadocivil	nacionalidad	calleavdom1	calleavdom2	calleavdom3	teldom	celular	fecha_inscripcion	usuario_reg	hora_reg	fecha_reg	extci	destino	par_profesion
+           // id	nombrecompleto	par_tipodoc	nrodoc	par_tipoper	fecha_nac	par_sexo	par_estadocivil	nacionalidad	calleavdom1	calleavdom2	calleavdom3	teldom	celular	fecha_inscripcion	usuario_reg	    hora_reg	fecha_reg	extci	destino	    par_profesion
             //return $item1->domicilio;
             if($item1->estado_civil ='CA')
             {
@@ -119,14 +119,15 @@ use Illuminate\Support\Facades\Log;
             $calleavdom1 = substr($item1->domicilio,0,30 );
             $calleavdom2 = substr($item1->domicilio,31,60 );
             $calleavdom3 = substr($item1->domicilio,61,30 );
-            $list[] = json_decode(json_encode(array("id" => $cont,"nombrecompleto" => $item1->nombrecompleto,"par_tipodoc" => 1,"nrodoc" => $item1->ci,"par_tipoper" => 1,"fecha_nac" => $item1->fecha_nac,"par_sexo" => $item1->sexo,"par_estadocivil" => $ec,"nacionalidad" => "BOLIVIANO","calleavdom1" => $calleavdom1, "calleavdom2" => $calleavdom2,"calleavdom3" => $calleavdom3,"teldom" =>"","celular" =>$item1->telefono, "fecha_inscripcion" =>  $item1->fecha_ingreso, "usuario_reg" => 'administrador', "hora_reg" => "12:52:33","fecha_reg" => "2020-07-01","extci" => $item1->lugar_exp,"destino" => "","par_profesion" => $item1->par_profesion)));
+            $list[] = json_decode(json_encode(array("id" => $cont,"nombrecompleto" => $item1->nombrecompleto,"par_tipodoc" => "1","nrodoc" => $item1->ci,"par_tipoper" => "1","fecha_nac" => $item1->fecha_nac,"par_sexo" => $item1->sexo,"par_estadocivil" => $ec,"nacionalidad" => "BOLIVIANO","calleavdom1" => $calleavdom1, "calleavdom2" => $calleavdom2,"calleavdom3" => $calleavdom3,"teldom" =>"-","celular" => $item1->telefono, "fecha_inscripcion" =>  $item1->fecha_ingreso, "usuario_reg" => 'administrador', "hora_reg" => "12:52:33","fecha_reg" => "2020-07-01","extci" => $item1->lugar_exp,"destino" => "-","par_profesion" => $item1->par_profesion)));
             $i++;
 
             }
         } 
       
-
-        return array_push(json_decode(json_encode($afi)),$list);
+       // $afi1[] = json_decode(json_encode($afi));
+       // return $afi1;
+        return array_push(json_decode(json_encode($afi)),array($list));
        // return json_decode(json_encode($afi));
     }
     
