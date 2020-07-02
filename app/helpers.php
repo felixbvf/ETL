@@ -1,8 +1,9 @@
 <?php
 use App\Gbpersona;
-
+//use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\FuniconarioImport;
+use Illuminate\Support\Facades\Log;
 
     function CountClient()
 	{	 
@@ -52,6 +53,7 @@ use App\Imports\FuniconarioImport;
         */
         return $total;
     }
+    
 
     
     function importFuncionario()
@@ -91,35 +93,41 @@ use App\Imports\FuniconarioImport;
     ->whereRaw("exists(select id_persona from finanzas.ptm_prestamos where par_estado ='A' and par_estado_prestamo ='DESEM' and id_persona = global.gbpersona.id_persona)
     or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.gbpersona.id_persona 
     and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION'))")
-    ->orderByRaw('id_persona::numeric asc')->first();;
-
-        $rows = Excel::toCollection(new FuniconarioImport, storage_path('AGENDA.xlsx'));
-        $i = 1;
+    ->orderByRaw('id_persona::numeric asc')->skip(1)->take(1)->get();
+    
+   // return $afi;
+        $rows = json_decode(json_encode(Excel::toCollection(new FuniconarioImport, storage_path('AGENDA.xlsx'))));
+       // $rows1 = json_decode(json_encode($rows));
+       $i=1;
+       $list = array();
         foreach ($rows as $item) {
+            foreach ($item as $item1) {
             $cont = CountClient() + $i;
            // id	nombrecompleto	par_tipodoc	nrodoc	par_tipoper	fecha_nac	par_sexo	par_estadocivil	nacionalidad	calleavdom1	calleavdom2	calleavdom3	teldom	celular	fecha_inscripcion	usuario_reg	hora_reg	fecha_reg	extci	destino	par_profesion
-            if($item->estado_civil ='CA')
+            //return $item1->domicilio;
+            if($item1->estado_civil ='CA')
             {
                 $ec = 2;
             }
-            else if($item->estado_civil ='SO')
+            else if($item1->estado_civil ='SO')
             {
                 $ec = 1;
             }
             else{
                 $ec = 3;
             }
-            //return $rows;
-            return $item->domicilio;
-            $calleavdom1 = substr($item->direccion,0,30 );
-            $calleavdom2 = substr($item->direccion,31,30 );
-            //$calleavdom3 = substr($item->direccion,61,30 );
-            array_push($afi, array("id" => $cont,"nombrecompleto" => $item->nombrecompleto,"par_tipodoc" => 1,"nrodoc" => $item->ci,"par_tipoper" => 1,"fecha_nac" => $item->fecha_nac,"par_sexo" => $item->sexo,"par_estadocivil" => $ec,"nacionalidad" => "BOLIVIANO","calleavdom1" => $calleavdom1, "calleavdom2" => $calleavdom2,"calleavdom3" => "","teldom" =>"","celular" =>$item->telefono, "fecha_inscripcion" =>  $item->fecha_ingreso, "usuario_reg" => 'administrador', "hora_reg" => "12:52:33","fecha_reg" => "2020-07-01","extci" => $item->lugar_exp,"destino" => "","par_profesion" => $item->par_profesion));
+            $calleavdom1 = substr($item1->domicilio,0,30 );
+            $calleavdom2 = substr($item1->domicilio,31,60 );
+            $calleavdom3 = substr($item1->domicilio,61,30 );
+            $list[] = json_decode(json_encode(array("id" => $cont,"nombrecompleto" => $item1->nombrecompleto,"par_tipodoc" => 1,"nrodoc" => $item1->ci,"par_tipoper" => 1,"fecha_nac" => $item1->fecha_nac,"par_sexo" => $item1->sexo,"par_estadocivil" => $ec,"nacionalidad" => "BOLIVIANO","calleavdom1" => $calleavdom1, "calleavdom2" => $calleavdom2,"calleavdom3" => $calleavdom3,"teldom" =>"","celular" =>$item1->telefono, "fecha_inscripcion" =>  $item1->fecha_ingreso, "usuario_reg" => 'administrador', "hora_reg" => "12:52:33","fecha_reg" => "2020-07-01","extci" => $item1->lugar_exp,"destino" => "","par_profesion" => $item1->par_profesion)));
             $i++;
-        } 
 
-        
-        return $rows;
+            }
+        } 
+      
+
+        return array_push(json_decode(json_encode($afi)),$list);
+       // return json_decode(json_encode($afi));
     }
     
 ?>
