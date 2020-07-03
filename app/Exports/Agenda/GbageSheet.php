@@ -133,7 +133,7 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
     public function collection()
     {
         // CONSULTA DE PERSONAS
-        $personas = Gbpersona::Select(DB::raw("id_persona::numeric as id, nombrecompleto,
+        /*$personas = Gbpersona::Select(DB::raw("id_persona::numeric as id, nombrecompleto,
             CASE
             WHEN par_tipodoc = 'LMI' THEN 11
             WHEN par_tipodoc= 'CI' THEN 1
@@ -169,12 +169,12 @@ class GbageSheet extends DefaultValueBinder implements FromCollection,WithHeadin
         or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.gbpersona.id_persona 
         and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION'))")
         ->orderByRaw('id_persona::numeric asc')->get();
-    
+    */
     //PREPARAR ARRAY DE OBJETOS PERSONAL
-    $total = CountClient();
-    $lista_funcionarios = importFuncionario();
-    //array_push($rows, array($i, $a->code));
-    return $personas;
+    
+    $personas[] = importFuncionario();
+    $personas = array_flatten($personas);
+    return collect($personas);
     }
 
     public function title(): string
