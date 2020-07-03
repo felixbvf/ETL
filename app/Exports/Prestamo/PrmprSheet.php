@@ -55,7 +55,10 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
                 end as par_estado,
         usuario_reg,fecha_reg::timestamp::time as hora_reg,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
         to_char(fecha_incumplimiento_pp::timestamp::date,'DD/MM/YYYY') as fecha_incumplimiento_pp,
-        par_tipo_credito_asfi,calificacion_automatica"))
+        par_tipo_credito_asfi,calificacion_automatica,
+        (SELECT to_char(max(fecha_cuota)::timestamp::date,'DD/MM/YYYY') as fecha_cuota 
+			FROM finanzas.ptm_plan_pagos
+			WHERE id_prestamo = ptm_prestamos.id_prestamo AND par_estado::text = 'A'::text) as fecha_cuota"))
         ->whereRaw("par_estado::text = 'A'::text and par_estado_prestamo='DESEM'")->orderByRaw("id_persona::numeric asc")->get();
         
         return $prestamos;
