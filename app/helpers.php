@@ -48,7 +48,10 @@ use Illuminate\Support\Facades\Log;
         teldom,
         celular,
         to_char(fecha_inscripcion,'DD/MM/YYYY') as fecha_inscripcion,
-        usuario_reg,
+        case 
+        when (usuario_reg = 'administrador' or usuario_reg is null) then 'MGB'
+        else upper(usuario_reg)
+        end as usuario_reg,
         fecha_reg::timestamp::time as hora_reg,
         to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
         SPLIT_PART(nrodoc, '-', 2) as extci,destino,par_profesion"))

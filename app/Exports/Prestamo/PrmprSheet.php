@@ -47,7 +47,10 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             WHEN fecha_cambio_estado is null AND id_estado = 'VIG' THEN  to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY')
             else  to_char(fecha_cambio_estado::timestamp::date,'DD/MM/YYYY')
             end as fecha_cambio_estado,
-        to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY') as fecha_desembolso,to_char(fecha_ultimo_pago::timestamp::date,'DD/MM/YYYY') as fecha_ultimo_pago,
+        to_char(fecha_desembolso::timestamp::date,'DD/MM/YYYY') as fecha_desembolso,
+        (SELECT max(ptm_tr_detalle.fecha_transaccion) AS max
+			FROM finanzas.ptm_tr_detalle
+			WHERE ptm_tr_detalle.par_estado::text = 'A'::text AND ptm_tr_detalle.par_tipo_op_prestamo::text = 'COBRO'::text AND ptm_tr_detalle.id_prestamo::text = ptm_prestamos.id_prestamo) as fecha_ultimo_pago,
         no_reprogramacion,to_char(fecha_reprogramacion::timestamp::date,'DD/MM/YYYY') as fecha_reprogramacion,
         case 
                 when par_estado = 'A' then 0
@@ -56,9 +59,9 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
         usuario_reg,fecha_reg::timestamp::time as hora_reg,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
         to_char(fecha_incumplimiento_pp::timestamp::date,'DD/MM/YYYY') as fecha_incumplimiento_pp,
         par_tipo_credito_asfi,calificacion_automatica,
-        (SELECT to_char(max(fecha_cuota)::timestamp::date,'DD/MM/YYYY') as fecha_cuota 
+        (SELECT to_char(max(fecha_cuota)::timestamp::date,'DD/MM/YYYY') as fecha_cuota
 			FROM finanzas.ptm_plan_pagos
-			WHERE id_prestamo = ptm_prestamos.id_prestamo AND par_estado::text = 'A'::text) as fecha_cuota"))
+			WHERE id_prestamo = ptm_prestamos.id_prestamo AND par_estado::text = 'A'::text) as ultima_fecha_cuota_pp"))
         ->whereRaw("par_estado::text = 'A'::text and par_estado_prestamo='DESEM'")->orderByRaw("id_persona::numeric asc")->get();
         
         return $prestamos;
@@ -106,8 +109,8 @@ class PrmprSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
             $prestamos->id_estado,              //Codigo de estado de la operación (2:Vigente, 5:Vencido, 6:Ejecucion, 7:Castigado)
             $prestamos->fecha_cambio_estado,    //Fecha en la que ingreso al estado actual
             $prestamos->fecha_cambio_estado,    //Fecha en la que ingreso al estado Vencido
-            $prestamos->fecha_cambio_estado,    //Fecha de vencimiento actual de la operación
-            $prestamos->fecha_cambio_estado,    //Fecha de vencimiento original de la operación
+            $prestamos->ultima_fecha_cuota_pp,    //Fecha de vencimiento actual de la operación
+            $prestamos->ultima_fecha_cuota_pp,    //Fecha de vencimiento original de la operación
             $prestamos->id_estado,               //Estado anterior del prestamo
             $prestamos->fecha_cambio_estado,    //Fecha en la que ingreso al estado anterior
             $prestamos->fecha_desembolso,       //Fecha de desembolso de la 
