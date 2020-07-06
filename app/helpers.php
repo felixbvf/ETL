@@ -77,7 +77,6 @@ use Illuminate\Support\Facades\Log;
             $list[] = json_decode(json_encode(array("id" => $cont,"nombrecompleto" => $item1->nombrecompleto,"par_tipodoc" => $item1->par_tipodoc,"nrodoc" => $item1->nrodoc,"par_tipoper" => $item1->par_tipoper,"fecha_nac" => $item1->fecha_nac,"par_sexo" => $item1->par_sexo,"par_estadocivil" => $item1->par_estadocivil,"nacionalidad" => $item1->nacionalidad,"calleavdom1" => $calleavdom1, "calleavdom2" => $calleavdom2,"calleavdom3" => $calleavdom3,"teldom" => $item1->teldom,"celular" => $item1->celular, "fecha_inscripcion" =>  $item1->fecha_inscripcion, "usuario_reg" => $item1->usuario_reg, "hora_reg" => $item1->hora_reg,"fecha_reg" => $item1->fecha_reg,"extci" => $item1->extci,"destino" => $item1->destino,"par_profesion" => $item1->par_profesion)));
             $i++;
     }
-
     //return $list;
     array_push($afi,$list);
     return array_flatten($afi);
