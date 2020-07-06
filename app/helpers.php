@@ -83,10 +83,11 @@ use Illuminate\Support\Facades\Log;
         
   }
     
-    function array_flatten($array) { 
-        if (!is_array($array)) { 
+  function array_flatten($array) { 
+    if (!is_array($array)) 
+    { 
           return FALSE; 
-        } 
+    } 
         $result = array(); 
         foreach ($array as $key => $value) { 
           if (is_array($value)) { 
@@ -95,9 +96,17 @@ use Illuminate\Support\Facades\Log;
           else { 
             $result[$key] = $value; 
           } 
-        } 
-        return $result; 
-      } 
+    } 
+    return $result; 
+  }
+
+  //FUNCION LEER EXCEL
+  function getExcel()
+  {
+    $rows = json_decode(json_encode(Excel::toArray(new FuniconarioImport, storage_path('AGENDA.xlsx'))));
+    $rows = array_flatten($rows);
+    return $rows;
+  }
 
 
     

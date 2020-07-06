@@ -15,12 +15,29 @@ class GblabSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
 
     public function collection()
     {
-        $gblab = Gbpersona::Select(DB::raw("id_persona,par_fuerza,telofi,par_profesion,numero_papeleta,to_char(fecha_ingreso_trabajo,'DD/MM/YYYY') as fecha_ingreso_trabajo,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,usuario_reg,fecha_reg::timestamp::time as hora_reg"))
+        $gblab = Gbpersona::Select(DB::raw("id_persona,par_fuerza,telofi,par_profesion,numero_papeleta,to_char(fecha_ingreso_trabajo,'DD/MM/YYYY') as fecha_ingreso_trabajo,to_char(fecha_reg::timestamp::date,'DD/MM/YYYY') as fecha_reg,
+        case 
+        when (usuario_reg = 'administrador' or usuario_reg is null) then 'MGB'
+        else upper(usuario_reg)
+        end as usuario_reg,
+        fecha_reg::timestamp::time as hora_reg"))
                 ->whereRaw("exists(select id_persona from finanzas.ptm_prestamos where par_estado ='A' and par_estado_prestamo ='DESEM' and id_persona = global.gbpersona.id_persona)
                 or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.gbpersona.id_persona 
                 and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION'))")
                 ->orderByRaw('id_persona::numeric asc')->get();
-        return $gblab;
+        
+        $gblab = json_decode(json_encode($gblab));
+        $gblab = array_flatten($gblab);
+        $i=1;
+        foreach (getExcel() as $item1) 
+        {
+                                $cont = (int)CountClient() + (int)$i;
+                                $list[] = json_decode(json_encode(array("id_persona" => $cont,"par_fuerza" => $item1->par_fuerza,"telofi" => $item1->teldom,"par_profesion" => $item1->par_profesion,"numero_papeleta" => $item1->numero_papeleta,"fecha_ingreso_trabajo" => $item1->fecha_inscripcion,"fecha_reg" => $item1->fecha_reg,"usuario_reg" => $item1->usuario_reg,"hora_reg" => $item1->hora_reg)));
+                                $i++;
+        }
+                        
+        array_push($gblab,$list);
+        return collect(array_flatten($gblab));
     }
     public function map($gblab) : array {  //MAPEO DE DATOS
         return [

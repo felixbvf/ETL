@@ -53,7 +53,20 @@ class GbdocSheet implements FromCollection,WithHeadings,ShouldAutoSize,WithMappi
                 or exists (select id_persona from finanzas.aps_aportes where  id_persona = global.gbpersona.id_persona 
                 and par_estado ='A' and (id_estado = 'VIGENTE' or id_estado = 'COMISION' or id_estado ='LICENCIA' or id_estado = 'RETENCION'))")
                 ->orderByRaw('id_persona::numeric asc')->get();
-        return $gbdoc;
+        
+        $gbdoc = json_decode(json_encode($gbdoc));
+        $gbdoc = array_flatten($gbdoc);
+        $i=1;
+        foreach (getExcel() as $item1) 
+        {
+                        $cont = (int)CountClient() + (int)$i;
+                        $list[] = json_decode(json_encode(array("id_persona" => $cont,"nrodoc" => $item1->nrodoc,"fecha_exp" => $item1->fecha_exp,"fecha_reg" => $item1->fecha_reg,"usuario_reg" => $item1->usuario_reg,"hora_reg" => $item1->hora_reg)));
+                        $i++;
+        }
+                
+        array_push($gbdoc,$list);
+        return collect(array_flatten($gbdoc));
+
     }
 
     public function title(): string
